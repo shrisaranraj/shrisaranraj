@@ -7,11 +7,19 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: selfhosted
+    runs-on: ubuntu-latest
+    environment: Prod
     steps:
-      - name: Run a one-line script
-        run: echo Hello, world!
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+     - name:                     'Az CLI login'
+       uses:                     Azure/login@v1.4.3
+       with:
+         client-id:              ${{ secrets.CLIENTID}}
+         tenant-id:              ${{ secrets.TENANTID}}
+         subscription-id:        ${{ secrets.SUBSCRIPTIONID }}
+         allow-no-subscriptions: true
+env:
+ TF_INSTANCED:                   "shrisaranraj"
+ TF_ACTION:                      ${{ github.event.inputs.TF_ACTION }}
+ SHR_S:                          "./${{ github.event.inputs.TF_INSTANCED }}/.data/scripts/"
+ permissions:                      write-all
+ 
