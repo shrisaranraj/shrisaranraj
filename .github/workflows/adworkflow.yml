@@ -55,3 +55,10 @@ jobs:
          tenant-id:              ${{ secrets.TENANTID}}
          subscription-id:        ${{ secrets.SUBSCRIPTIONID }}
          allow-no-subscriptions: true
+if: |
+         !cancelled()
+         - name:                     'Set Subscription'
+run: |
+         az account set --subscription="${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+       if: |
+         !cancelled()
