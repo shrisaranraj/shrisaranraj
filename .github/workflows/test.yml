@@ -22,4 +22,6 @@ env:
  TF_ACTION:                      ${{ github.event.inputs.TF_ACTION }}
  SHR_S:                          "./${{ github.event.inputs.TF_INSTANCED }}/.data/scripts/"
  permissions:                      write-all
- 
+
+run:
+         az account set --subscription="${{ secrets.SUBSCRIPTIONID }}"
