@@ -3,7 +3,11 @@
 #company : Presidio
 name: selfHostedRunner
 on:
- workflow_dispatch:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+workflow_dispatch:
    inputs:
      TF_ACTION:
        description:              'Plan (review, correct errors, plan again) then Apply'
@@ -55,3 +59,10 @@ jobs:
          tenant-id:              ${{ secrets.TENANTID}}
          subscription-id:        ${{ secrets.SUBSCRIPTIONID }}
          allow-no-subscriptions: true
+if: |
+         !cancelled()
+         - name:                     'Set Subscription'
+run: |
+         az account set --subscription="${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+       if: |
+         !cancelled()
