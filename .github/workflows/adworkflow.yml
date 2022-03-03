@@ -3,7 +3,11 @@
 #company : Presidio
 name: selfHostedRunner
 on:
- workflow_dispatch:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+workflow_dispatch:
    inputs:
      TF_ACTION:
        description:              'Plan (review, correct errors, plan again) then Apply'
