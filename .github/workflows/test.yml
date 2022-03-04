@@ -19,8 +19,10 @@ jobs:
        uses:                     Azure/login@v1.4.3
        with:
          client-id:              ${{ secrets.CLIENTID}}
+         clientSecret:           ${{ secrets.CLIENTSECRET}}
          tenant-id:              ${{ secrets.TENANTID}}
          subscription-id:        ${{ secrets.SUBSCRIPTIONID }}
          allow-no-subscriptions: true
      - run:
          az account set --subscription="${{ secrets.SUBSCRIPTIONID }}"
+
