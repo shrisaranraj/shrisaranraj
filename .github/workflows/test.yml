@@ -9,6 +9,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: Prod
+    env:
+       TF_INSTANCED:                   "shrisaranraj"
+       TF_ACTION:                      ${{ github.event.inputs.TF_ACTION }}
+       SHR_S:                          "./${{ github.event.inputs.TF_INSTANCED }}/.data/scripts/"
+       permissions:                      write-all
     steps:
      - name:                     'Az CLI login'
        uses:                     Azure/login@v1.4.3
@@ -17,11 +22,5 @@ jobs:
          tenant-id:              ${{ secrets.TENANTID}}
          subscription-id:        ${{ secrets.SUBSCRIPTIONID }}
          allow-no-subscriptions: true
-env:
- TF_INSTANCED:                   "shrisaranraj"
- TF_ACTION:                      ${{ github.event.inputs.TF_ACTION }}
- SHR_S:                          "./${{ github.event.inputs.TF_INSTANCED }}/.data/scripts/"
- permissions:                      write-all
-
-run:
+     - run:
          az account set --subscription="${{ secrets.SUBSCRIPTIONID }}"
