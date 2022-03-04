@@ -15,14 +15,10 @@ jobs:
        SHR_S:                          "./${{ github.event.inputs.TF_INSTANCED }}/.data/scripts/"
        permissions:                      write-all
     steps:
-     - name:                     'Az CLI login'
-       uses:                     Azure/login@v1.4.3
+     - name: Azure CLI script
+       uses: azure/CLI@v1
        with:
-         client-id:              ${{ secrets.CLIENTID}}
-         clientSecret:           ${{ secrets.CLIENTSECRET}}
-         tenant-id:              ${{ secrets.TENANTID}}
-         subscription-id:        ${{ secrets.SUBSCRIPTIONID }}
-         allow-no-subscriptions: true
-     - run:
-         az account set --subscription="${{ secrets.SUBSCRIPTIONID }}"
-
+          azcliversion: 2.0.72
+          inlineScript: |
+                az cache purge
+                az account clear
