@@ -22,3 +22,6 @@ jobs:
           inlineScript: |
                 az cache purge
                 az account clear
+     - name: Setup Terraform
+       id: setupTF
+       uses: hashicorp/setup-terraform@v1
