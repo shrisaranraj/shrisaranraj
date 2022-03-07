@@ -15,8 +15,8 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.TENANTID }}
       ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
       ARM_CLIENT_SECRET:  ${{ secrets.CLIENTSECRET }}
-      GH_ORG: rahulprabhu22
-      GH_REPO: azure-github-actions
+      GH_ORG: shrisaranraj
+      GH_REPO: shrisaranraj
 
 defaults:
     run:
