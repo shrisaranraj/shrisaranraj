@@ -28,6 +28,10 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   properties: {
     supportsHttpsTrafficOnly: true
   }
+  tags:{
+        Name: 'owner'
+        value: 'Saranraj'
+  }
 }
 
 output storageEndpoint object = stg.properties.primaryEndpoints
