@@ -29,7 +29,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
     supportsHttpsTrafficOnly: true
   }
   tags:{
-        Name: 'owner'
+        Name: 'Owner'
         value: 'Saranraj'
   }
 }
