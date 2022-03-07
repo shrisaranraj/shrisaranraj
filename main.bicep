@@ -22,7 +22,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   name: uniqueStorageName
   location: location
   tags:{
-        Name: 'Owner'
+        name: 'Owner'
         value: 'Saranraj'
   }
   sku: {
