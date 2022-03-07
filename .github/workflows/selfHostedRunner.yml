@@ -1,29 +1,28 @@
 name: 'Self Hosted Runner'
-​on:
+on:
   push:
     branches:
     - main
   pull_request:
-​
+
 jobs:
   run_ghr_job:
     name: 'Github Hosted Runner Job'
     runs-on: ubuntu-latest
     environment: production
     env:
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET:  ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+      ARM_TENANT_ID: ${{ secrets.TENANTID }}
+      ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
+      ARM_CLIENT_SECRET:  ${{ secrets.CLIENTSECRET }}
       GH_ORG: rahulprabhu22
       GH_REPO: azure-github-actions
-​
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
-​
-    steps:
+
+defaults:
+    run:
+      shell: bash
+
+steps:
       - name: 'Az CLI login'
         uses: Azure/login@v1
         with:
@@ -31,7 +30,6 @@ jobs:
           allow-no-subscriptions: true
         if: |
           !cancelled()
-​
       - name: Setup Terraform
         id: setupTF
         uses: hashicorp/setup-terraform@v1
@@ -43,7 +41,7 @@ jobs:
           fetch-depth:  0
         if: |
           !cancelled()
-​
+     
       - id:   getregtoken
         name: 'Get SHR registration token'
         if: |
@@ -59,11 +57,11 @@ jobs:
             echo "::set-output name=tokenfail::$tokenfail"
             exit 1
           fi
-​
+
           echo "Got an authentication token for the self-hosted runner."
           echo "::set-output name=tokenfail::$tokenfail"
           echo "::set-output name=runnertoken::$RUNNER_TOKEN"
-​
+
       - id:   ghr_job
         name: 'Github Runner VM Creation'
         if: |
@@ -74,17 +72,17 @@ jobs:
           TF_VAR_gh_repo:  ${{ env.GH_REPO }}
           TF_VAR_sub_id:  ${{ env.ARM_SUBSCRIPTION_ID }}
           TF_VAR_gh_token:   ${{ steps.getregtoken.outputs.runnertoken }}
-​
+
         run: |
           PTH='./self-hosted'
           cd "$PTH"
-​
+
           terraform init -input=false
           terraform validate
           terraform plan 
-​
+
           terraform apply -auto-approve 
-​
+
       - name: Azure CLI script
         uses: azure/CLI@v1
         with:
@@ -93,20 +91,19 @@ jobs:
             az logout
             az cache purge
             az account clear
-​
-  status_check:
+
+status_check:
     name:     'Verify Self-Hosted Runner Is Registered'
     needs:    [run_ghr_job]
     if: |
       !cancelled()
-​
     runs-on:  ubuntu-latest
     environment:        Prod
     outputs: 
       shrregistered:      ${{ steps.shr_exist.outputs.shrregistered }}
     env:
-      GH_ORG: rahulprabhu22
-      GH_REPO: azure-github-actions
+      GH_ORG: shrisaranraj
+      GH_REPO: shrisaranraj
     steps:
       - name: shr_exist
         run: |
@@ -147,8 +144,8 @@ jobs:
             shrregistered="true"
             echo "::set-output name=shrregistered::$shrregistered"
           fi
-​
-  run_shr_job:
+
+run_shr_job:
     name:     Self-Hosted Runner Job
     needs:    [ run_ghr_job,status_check ]
     if: |
@@ -157,11 +154,11 @@ jobs:
     runs-on:  [ "self-hosted"]
     environment:        Prod
     env:
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET:  ${{ secrets.ARM_CLIENT_SECRET }}
-​
+      ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+      ARM_TENANT_ID: ${{ secrets.TENANTID }}
+      ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
+      ARM_CLIENT_SECRET:  ${{ secrets.CLIENTSECRET }}
+
       # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
@@ -174,7 +171,7 @@ jobs:
           fetch-depth:  0
         if: |
           !cancelled()
-​
+
       - id:   RunTFScripts
         name: 'Deploy TF Scripts'
         if: |
@@ -182,28 +179,27 @@ jobs:
         run: |
           PTH='./resources'
           cd "$PTH"
-​
+
           terraform init -input=false
           terraform validate
           terraform apply -auto-approve 
-​
-  remove_shr:
+
+remove_shr:
     name: 'Remove Self Hosted Runner Job'
     runs-on: ubuntu-latest
     environment: production
     env:
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET:  ${{ secrets.ARM_CLIENT_SECRET }}
-      GH_ORG: rahulprabhu22
-      GH_REPO: azure-github-actions
-​
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+      ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+      ARM_TENANT_ID: ${{ secrets.TENANTID }}
+      ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
+      ARM_CLIENT_SECRET:  ${{ secrets.CLIENTSECRET }}
+      GH_ORG: shrisaranraj
+      GH_REPO: shrisaranraj
+
+# Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
-​
     steps:
       - name: 'Az CLI login'
         uses: Azure/login@v1
@@ -212,7 +208,6 @@ jobs:
           allow-no-subscriptions: true
         if: |
           !cancelled()
-​
       - name: Setup Terraform
         id: setupTF
         uses: hashicorp/setup-terraform@v1
@@ -224,7 +219,6 @@ jobs:
           fetch-depth:  0
         if: |
           !cancelled()
-​
       - id:   ghr_job
         name: 'Github Runner VM Creation'
         if: |
@@ -234,10 +228,10 @@ jobs:
           TF_VAR_gh_org:  ${{ env.GH_ORG }}
           TF_VAR_gh_repo:  ${{ env.GH_REPO }}
           TF_VAR_sub_id:  ${{ env.ARM_SUBSCRIPTION_ID }}
-​
+
         run: |
           PTH='./self-hosted'
           cd "$PTH"
-​
+
           terraform init -input=false
           terraform apply -auto-approve -destroy
