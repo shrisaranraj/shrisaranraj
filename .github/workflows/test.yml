@@ -1,0 +1,27 @@
+name: SelfHostedVM
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: Prod
+    env:
+       TF_INSTANCED:                   "shrisaranraj"
+       TF_ACTION:                      ${{ github.event.inputs.TF_ACTION }}
+       SHR_S:                          "./${{ github.event.inputs.TF_INSTANCED }}/.data/scripts/"
+       permissions:                      write-all
+    steps:
+     - name: Azure CLI script
+       uses: azure/CLI@v1
+       with:
+          azcliversion: 2.0.72
+          inlineScript: |
+                az cache purge
+                az account clear
+     - name: Setup Terraform
+       id: setupTF
+       uses: hashicorp/setup-terraform@v1
