@@ -14,82 +14,82 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.TENANTID }}
       ARM_CLIENT_ID: ${{ secrets.CLIENTID }}
       ARM_CLIENT_SECRET:  ${{ secrets.CLIENTSECRET }}
-      GH_ORG: rahulprabhu22
-      GH_REPO: azure-github-actions
+      GH_ORG: shrisaranraj
+      GH_REPO: shrisaranraj
 
 defaults:
     run:
       shell: bash
 
-steps:
-      - name: 'Az CLI login'
-        uses: Azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          allow-no-subscriptions: true
-        if: |
-          !cancelled()
-      - name: Setup Terraform
-        id: setupTF
-        uses: hashicorp/setup-terraform@v1
-      
-      - name: 'Checkout Repo'
-        uses: actions/checkout@v2
-        with:
-          ref: 'main'
-          fetch-depth:  0
-        if: |
-          !cancelled()
-     
-      - id:   getregtoken
-        name: 'Get SHR registration token'
-        if: |
-          !cancelled()
-        env:
-          GHPAT: ${{ secrets.GH_PAT }}
-        run: |
-          tokenfail="false"
-          RUNNER_TOKEN=$(curl -s -X POST "https://api.github.com/repos/$GH_ORG/$GH_REPO/actions/runners/registration-token" -H "accept: application/vnd.github.v3+json" -H "authorization: token $GHPAT" | jq -r '.token')
-          if [ "null" == "$RUNNER_TOKEN" -o -z "$RUNNER_TOKEN" ]; then
-            tokenfail="true"
-            echo "Failed to get an authentication token."
-            echo "::set-output name=tokenfail::$tokenfail"
-            exit 1
-          fi
+       steps:
+              - name: 'Az CLI login'
+                uses: Azure/login@v1
+                with:
+                  creds: ${{ secrets.AZURE_CREDENTIALS }}
+                  allow-no-subscriptions: true 
+                if: |
+                  !cancelled()
+              - name: Setup Terraform
+                id: setupTF
+                uses: hashicorp/setup-terraform@v1
 
-          echo "Got an authentication token for the self-hosted runner."
-          echo "::set-output name=tokenfail::$tokenfail"
-          echo "::set-output name=runnertoken::$RUNNER_TOKEN"
+              - name: 'Checkout Repo'
+                uses: actions/checkout@v2
+                with:
+                  ref: 'main'
+                  fetch-depth:  0
+                if: |
+                  !cancelled()
 
-      - id:   ghr_job
-        name: 'Github Runner VM Creation'
-        if: |
-          !cancelled() &&
-          ( "${{ steps.getregtoken.outputs.tokenfail }}" == "false" )
-        env:
-          TF_VAR_gh_org:  ${{ env.GH_ORG }}
-          TF_VAR_gh_repo:  ${{ env.GH_REPO }}
-          TF_VAR_sub_id:  ${{ env.ARM_SUBSCRIPTION_ID }}
-          TF_VAR_gh_token:   ${{ steps.getregtoken.outputs.runnertoken }}
+              - id:   getregtoken
+                name: 'Get SHR registration token'
+                if: |
+                  !cancelled()
+                env:
+                  GHPAT: ${{ secrets.GH_PAT }}
+                run: |
+                  tokenfail="false"
+                  RUNNER_TOKEN=$(curl -s -X POST "https://api.github.com/repos/$GH_ORG/$GH_REPO/actions/runners/registration-token" -H "accept: application/vnd.github.v3+json" -H "authorization: token $GHPAT" | jq -r '.token')
+                  if [ "null" == "$RUNNER_TOKEN" -o -z "$RUNNER_TOKEN" ]; then
+                    tokenfail="true"
+                    echo "Failed to get an authentication token."
+                    echo "::set-output name=tokenfail::$tokenfail"
+                    exit 1
+                  fi
 
-        run: |
-          PTH='./self-hosted'
-          cd "$PTH"
+                  echo "Got an authentication token for the self-hosted runner."
+                  echo "::set-output name=tokenfail::$tokenfail"
+                  echo "::set-output name=runnertoken::$RUNNER_TOKEN"
 
-          terraform init -input=false
-          terraform validate
-          terraform plan 
+              - id:   ghr_job
+                name: 'Github Runner VM Creation'
+                if: |
+                  !cancelled() &&
+                  ( "${{ steps.getregtoken.outputs.tokenfail }}" == "false" )
+                env:
+                  TF_VAR_gh_org:  ${{ env.GH_ORG }}
+                  TF_VAR_gh_repo:  ${{ env.GH_REPO }}
+                  TF_VAR_sub_id:  ${{ env.SUBSCRIPTIONID }}
+                  TF_VAR_gh_token:   ${{ steps.getregtoken.outputs.runnertoken }}
 
-          terraform apply -auto-approve 
+                run: |
+                  PTH='./self-hosted'
+                  cd "$PTH"
 
-      - name: Azure CLI script
-        uses: azure/CLI@v1
-        with:
-          azcliversion: 2.0.72
-          inlineScript: |
-            az logout
-            az cache purge
-            az account clear
+                  terraform init -input=false
+                  terraform validate
+                  terraform plan 
+
+                  terraform apply -auto-approve 
+
+              - name: Azure CLI script
+                uses: azure/CLI@v1
+                with:
+                  azcliversion: 2.0.72
+                  inlineScript: |
+                    az logout
+                    az cache purge
+                    az account clear
 
 status_check:
     name:     'Verify Self-Hosted Runner Is Registered'
