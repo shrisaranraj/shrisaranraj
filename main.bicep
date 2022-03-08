@@ -18,8 +18,6 @@ param location string = resourceGroup().location
 
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
 
-var managementGroupName = 'fadvtstmgmt01'
-
 resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   name: uniqueStorageName
   location: location
@@ -35,12 +33,17 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   }
 }
 
-targetScope = 'resourceGroup'
+param managementGroupIdentifier string
+
+module  'mgModule.bicep' = {
+  name: 'deployToMG'
+  scope: managementGroup(managementGroupIdentifier)
+}
+targetScope = 'managementGroup'
 
 param mgName string = 'mg-${uniqueString(newGuid())}'
 
 resource newMG 'Microsoft.Management/managementGroups@2020-05-01' = {
-  scope: tenant()
   name: mgName
   properties: {
     details: {
