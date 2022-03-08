@@ -20,7 +20,7 @@ var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
 
 var managementGroupName = 'fadvtstmgmt01'
 
-resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   name: uniqueStorageName
   location: location
   sku: {
@@ -36,7 +36,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
-resource stg 'Microsoft.Management/managementGroups@2021-04-01' = {
+resource stg 'Microsoft.Management/managementGroups@2021-08-01' = {
   name: managementGroupName
   scope: tenant()
   properties: {
