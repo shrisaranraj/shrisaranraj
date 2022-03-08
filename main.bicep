@@ -35,18 +35,21 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   }
 }
 
-resource mtm 'Microsoft.Management/managementGroups@2021-04-01' = {
-  name: managementGroupName
+targetScope = 'Tenant Root Group'
+
+param mgName string = 'mg-${uniqueString(newGuid())}'
+
+resource newMG 'Microsoft.Management/managementGroups@2020-05-01' = {
   scope: tenant()
+  name: mgName
   properties: {
     details: {
       parent: {
-        id: '2a731c61-a2b2-4661-8409-5b861cf40d0c'
+        id: managementGroup().id
       }
     }
-    displayName: 'test'
   }
 }
 
 output storageEndpoint object = stg.properties.primaryEndpoints
-output mgmtEndpoint object = mtm.properties.primaryEndpoints
+output newManagementGroup string = mgName
