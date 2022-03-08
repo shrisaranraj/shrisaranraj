@@ -41,7 +41,7 @@ resource mtm 'Microsoft.Management/managementGroups@2021-04-01' = {
   properties: {
     details: {
       parent: {
-        id: 'Tenant Root Group'
+        id: '2a731c61-a2b2-4661-8409-5b861cf40d0c'
       }
     }
     displayName: 'test'
