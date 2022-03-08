@@ -47,5 +47,4 @@ resource stg 'Microsoft.Management/managementGroups@2021-08-01' = {
     displayName: 'string'
   }
 }
-
 output storageEndpoint object = stg.properties.primaryEndpoints
