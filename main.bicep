@@ -39,11 +39,6 @@ resource tst 'Microsoft.Management/managementGroups@2021-08-01' = {
   name: managementGroupName
   scope: tenant()
   properties: {
-    details: {
-      parent: {
-        id: 'Tenant Root Group'
-      }
-    }
     displayName: 'test'
   }
 }
