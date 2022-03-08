@@ -18,6 +18,8 @@ param location string = resourceGroup().location
 
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
 
+var managementGroupName = 'fadvtstmgmt01'
+
 resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: uniqueStorageName
   location: location
@@ -31,6 +33,19 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   tags:{
         Name: 'owner'
         value: 'Saranraj'
+  }
+}
+
+resource stg 'Microsoft.Management/managementGroups@2021-04-01' = {
+  name: managementGroupName
+  scope: tenant()
+  properties: {
+    details: {
+      parent: {
+        id: 'string'
+      }
+    }
+    displayName: 'string'
   }
 }
 
