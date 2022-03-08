@@ -35,11 +35,4 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   }
 }
 
-resource tst 'Microsoft.Management/managementGroups@2021-08-01' = {
-  name: managementGroupName
-  scope: tenant()
-  properties: {
-    displayName: 'test'
-  }
-}
 output storageEndpoint object = stg.properties.primaryEndpoints
