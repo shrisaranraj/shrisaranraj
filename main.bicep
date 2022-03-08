@@ -35,7 +35,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   }
 }
 
-targetScope = 'managementGroup'
+targetScope = 'resourceGroup'
 
 param mgName string = 'mg-${uniqueString(newGuid())}'
 
