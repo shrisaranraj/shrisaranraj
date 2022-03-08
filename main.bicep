@@ -23,16 +23,15 @@ var managementGroupName = 'fadvtstmgmt01'
 resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   name: uniqueStorageName
   location: location
+  tags:{
+        Owner: 'Saranraj'
+  }
   sku: {
     name: storageSKU
   }
   kind: 'StorageV2'
   properties: {
     supportsHttpsTrafficOnly: true
-  }
-  tags:{
-        Name: 'owner'
-        value: 'Saranraj'
   }
 }
 
