@@ -41,10 +41,10 @@ resource tst 'Microsoft.Management/managementGroups@2021-08-01' = {
   properties: {
     details: {
       parent: {
-        id: 'string'
+        id: 'Tenant Root Group'
       }
     }
-    displayName: 'string'
+    displayName: 'test'
   }
 }
 output storageEndpoint object = stg.properties.primaryEndpoints
