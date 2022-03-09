@@ -33,25 +33,14 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   }
 }
 
-param managementGroupIdentifier string
-
-module  'mgModule.bicep' = {
-  name: 'deployToMG'
-  scope: managementGroup(managementGroupIdentifier)
-}
 targetScope = 'managementGroup'
 
-param mgName string = 'mg-${uniqueString(newGuid())}'
+param otherManagementGroupName string = 'Tenant Root Group'
 
-resource newMG 'Microsoft.Management/managementGroups@2020-05-01' = {
-  name: mgName
-  properties: {
-    details: {
-      parent: {
-        id: managementGroup().id
-      }
-    }
-  }
+// module deployed at management group level but in a different management group
+module exampleModule 'module.bicep' = {
+  name: 'test'
+  scope: managementGroup(otherManagementGroupName)
 }
 
 output storageEndpoint object = stg.properties.primaryEndpoints
