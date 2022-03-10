@@ -45,4 +45,3 @@ module exampleModule 'module.bicep' = {
 
 output storageEndpoint object = stg.properties.primaryEndpoints
 output newManagementGroup string = mgName
-
