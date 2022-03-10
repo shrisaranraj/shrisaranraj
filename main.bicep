@@ -30,14 +30,3 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   }
 }
 
-targetScope = 'resourceGroup'
-
-param otherManagementGroupName string = 'Tenant Root Group'
-
-// module deployed at management group level but in a different management group
-module exampleModule 'module.bicep' = {
-  name: 'test'
-  scope: managementGroup(otherManagementGroupName)
-}
-
-output storageEndpoint object = stg.properties.primaryEndpoints
