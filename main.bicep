@@ -16,10 +16,8 @@ param storageSKU string = 'Standard_LRS'
 
 param location string = resourceGroup().location
 
-var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
-
 resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
-  name: uniqueStorageName
+  name: testpresisa01
   location: location
   tags:{
         Owner: 'Saranraj'
@@ -33,7 +31,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   }
 }
 
-targetScope = 'managementGroup'
+targetScope = 'resourceGroup'
 
 param otherManagementGroupName string = 'Tenant Root Group'
 
@@ -44,4 +42,3 @@ module exampleModule 'module.bicep' = {
 }
 
 output storageEndpoint object = stg.properties.primaryEndpoints
-output newManagementGroup string = mgName
