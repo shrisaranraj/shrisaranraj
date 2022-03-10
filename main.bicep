@@ -1,6 +1,5 @@
 @minLength(3)
 @maxLength(11)
-param storagePrefix string
 
 @allowed([
   'Standard_LRS'
@@ -17,7 +16,7 @@ param storageSKU string = 'Standard_LRS'
 param location string = resourceGroup().location
 
 resource stg 'Microsoft.Storage/storageAccounts@2021-08-01' = {
-  name: testpresisa01
+  name: 'testpresisa01'
   location: location
   tags:{
         Owner: 'Saranraj'
