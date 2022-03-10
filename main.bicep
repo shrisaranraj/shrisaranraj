@@ -1,6 +1,3 @@
-@minLength(3)
-@maxLength(11)
-
 @allowed([
   'Standard_LRS'
   'Standard_GRS'
